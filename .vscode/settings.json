@@ -3,6 +3,6 @@
 	"files.eol": "\n",
 	"debug.openDebug": "neverOpen",
 	"python.linting.enabled": false,
-	"python.languageServer": "None",
+	"python.languageServer": "Pylance",
 	"python.pythonPath": "C:\\src\\Python39\\python.exe"
 }
