@@ -15,6 +15,13 @@ import time
 # Create your objects here.
 ev3 = EV3Brick()
 
-# Nicht benutzen, dass hat meinen Mindstorm zerschossen ö
-# movement = MotorController()
-# movement.drive(20)
+motorController = MotorController()
+
+# 5 Sekunden gerade aus fahren
+motorController.drive(5)
+
+# Umdrehen
+motorController.turn_around()
+
+# 5 Sekunden zurück fahren
+motorController.drive(5)

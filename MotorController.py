@@ -1,5 +1,5 @@
 from pybricks.ev3devices import (Motor, GyroSensor)
-from pybricks.parameters import Port
+from pybricks.parameters import Port, Direction
 from time import sleep, time
 
 class MotorController:
@@ -7,9 +7,9 @@ class MotorController:
     def __init__(self):
         self.speed = 300
 
-        # Devices verbinden
-        self.leftMotor = Motor(Port.D)
-        self.rightMotor = Motor(Port.B)
+        # Motoren und Sensoren verbinden
+        self.leftMotor = Motor(Port.B, positive_direction = Direction.COUNTERCLOCKWISE)
+        self.rightMotor = Motor(Port.D, positive_direction = Direction.COUNTERCLOCKWISE)
         self.gyro_sensor = GyroSensor(Port.S4)
     
     def drive(self, drive_seconds):
