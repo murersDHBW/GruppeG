@@ -18,10 +18,13 @@ ev3 = EV3Brick()
 motorController = MotorController()
 
 # 5 Sekunden gerade aus fahren
-motorController.drive(5)
+motorController.drive(3)
 
 # Umdrehen
 motorController.turn_around()
 
 # 5 Sekunden zurück fahren
-motorController.drive(5)
+motorController.reverse(3)
+
+# Wieder zum Start zurück fahren
+motorController.drive(6)

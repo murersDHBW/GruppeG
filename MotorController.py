@@ -12,20 +12,26 @@ class MotorController:
         self.rightMotor = Motor(Port.D, positive_direction = Direction.COUNTERCLOCKWISE)
         self.gyro_sensor = GyroSensor(Port.S4)
     
-    def drive(self, drive_seconds):
+    def drive(self, drive_seconds, reverse=False):
         left_speed = self.speed
         right_speed = self.speed
         drive_until = time() + drive_seconds
+
+        # Negative Werte drehen den Motor in die andere Richtung -> rückwärts
+        reverse_multiplier = -1 if reverse else 1
 
         angle = 0
         self.gyro_sensor.reset_angle(0)
 
         while time() < drive_until:
-            self.leftMotor.run(left_speed)
-            self.rightMotor.run(right_speed)
+
+            self.leftMotor.run(left_speed * reverse_multiplier)
+            self.rightMotor.run(right_speed * reverse_multiplier)
 
             sleep(0.1)
-            angle = self.gyro_sensor.angle()
+
+            # Wenn wir rückwärts fahren sind die Seiten vertauscht
+            angle = self.gyro_sensor.angle() * reverse_multiplier
 
             if abs(angle) <= 1:
                 # Wenn wir gerade aus fahren, setzen wir die Motoren wieder auf die gleiche Geschwindigkeit
@@ -46,6 +52,9 @@ class MotorController:
         self.leftMotor.stop()
         self.rightMotor.stop()
     
+    def reverse(self, drive_seconds):
+        self.drive(drive_seconds, reverse=True)
+
     def drive_until_obstacle(self):
         raise NotImplementedError("Dafür müssen wir erst irgend einen Sensor verbauen, der sowas erkennen kann.")
 
