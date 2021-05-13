@@ -1,5 +1,6 @@
 #!/usr/bin/env pybricks-micropython
 from MotorController import MotorController
+from UltraSonicSensor import UltraSonicSensor
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
                                  InfraredSensor, UltrasonicSensor, GyroSensor)
@@ -15,7 +16,19 @@ import time
 # Create your objects here.
 ev3 = EV3Brick()
 
+# Controller und Sensoren initialisieren
 motorController = MotorController()
+ultraSonicSensor = UltraSonicSensor()
+
+# Ultraschallpräsenz erkennen
+presence = ultraSonicSensor.scanForUltrasonicPresence()
+print("Ultrasonic Presence: " + str(presence))
+ev3.screen.print("Ultrasonic Presence: " + str(presence))
+
+# Distanz via Ultraschall messen
+distance = ultraSonicSensor.measureDistance()
+print(distance)
+ev3.screen.print(distance)
 
 # 5 Sekunden gerade aus fahren
 motorController.drive(3)
