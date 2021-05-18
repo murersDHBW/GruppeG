@@ -7,6 +7,8 @@
 
 [Sensoren](http://www.legoengineering.com/ev3-sensors/)
 
-
-
-Test
+## Belegung Ports:
+:arrow_upper_left:     Motor Links = B
+:arrow_upper_right:     Motor Rechts = D
+:red_circle::red_circle: UltraSonic = 1
+:arrows_clockwise:     Gyro = 4
