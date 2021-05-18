@@ -11,7 +11,13 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 import time
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
-# Click "Open user guide" on the EV3 extension tab for more information.
+## Belegung Ports:
+## Motor Link = B
+## Motor Rechts = D
+## UltraSonic = 1
+## Gyro = 4
+
+## !!! Beachten: VS Code EOL von CRLF auf LF !!!
 
 # Create your objects here.
 ev3 = EV3Brick()
