@@ -50,9 +50,9 @@ touchSensor = TouchSensor(Port.S1)
 # # Wieder zum Start zurück fahren
 # motorController.drive(6)
 
-userInteraction = UserInteraction(ev3.screen)
+userInteraction = UserInteraction(ev3)
 
-userInteraction.draw_map()
+userInteraction.draw()
 
 while not touchSensor.pressed():
     time.sleep(0.1)
