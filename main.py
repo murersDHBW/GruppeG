@@ -1,4 +1,5 @@
 #!/usr/bin/env pybricks-micropython
+from UserInteraction import UserInteraction
 from MotorController import MotorController
 from UltraSonicSensor import UltraSonicSensor
 from pybricks.hubs import EV3Brick
@@ -24,26 +25,34 @@ ev3 = EV3Brick()
 
 # Controller und Sensoren initialisieren
 motorController = MotorController()
-ultraSonicSensor = UltraSonicSensor()
+# ultraSonicSensor = UltraSonicSensor()
+touchSensor = TouchSensor(Port.S1)
 
-# Ultraschallpräsenz erkennen
-presence = ultraSonicSensor.scanForUltrasonicPresence()
-print("Ultrasonic Presence: " + str(presence))
-ev3.screen.print("Ultrasonic Presence: " + str(presence))
+# # Ultraschallpräsenz erkennen
+# presence = ultraSonicSensor.scanForUltrasonicPresence()
+# print("Ultrasonic Presence: " + str(presence))
+# ev3.screen.print("Ultrasonic Presence: " + str(presence))
 
-# Distanz via Ultraschall messen
-distance = ultraSonicSensor.measureDistance()
-print(distance)
-ev3.screen.print(distance)
+# # Distanz via Ultraschall messen
+# distance = ultraSonicSensor.measureDistance()
+# print(distance)
+# ev3.screen.print(distance)
 
-# 5 Sekunden gerade aus fahren
-motorController.drive(3)
+# # 5 Sekunden gerade aus fahren
+# motorController.drive(3)
 
-# Umdrehen
-motorController.turn_around()
+# # Umdrehen
+# motorController.turn_around()
 
-# 5 Sekunden zurück fahren
-motorController.reverse(3)
+# # 5 Sekunden zurück fahren
+# motorController.reverse(3)
 
-# Wieder zum Start zurück fahren
-motorController.drive(6)
+# # Wieder zum Start zurück fahren
+# motorController.drive(6)
+
+userInteraction = UserInteraction(ev3.screen)
+
+userInteraction.draw_map()
+
+while not touchSensor.pressed():
+    time.sleep(0.1)
