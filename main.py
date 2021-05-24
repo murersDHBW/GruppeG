@@ -31,4 +31,5 @@ outputs = Outputs()
 # Controller und Sensoren initialisieren
 motorController = MotorController(inputs, outputs)
 
-time.sleep(20)
+# time.sleep(20)
+motorController.drive(10)
