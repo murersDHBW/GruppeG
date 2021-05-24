@@ -8,7 +8,12 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
+from threading import Thread
+import mapping
+import sys
 import time
+
+
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 ## Belegung Ports:
@@ -26,24 +31,60 @@ ev3 = EV3Brick()
 motorController = MotorController()
 ultraSonicSensor = UltraSonicSensor()
 
+#instantiate variables needed for mapping
+wall = []
+positions = [[0,0]]
+robotAngle = 0
+measureFrequency = 0.008
+
+def getWallPos(stop):
+    while True:
+        if stop():
+                break
+        robotAngle = motorController.gyro_sensor.angle()
+        distance = ultraSonicSensor.measureDistance()
+        print(robotAngle)
+        if distance < 1000:
+            robot2wall = mapping.degToPos(robotAngle, distance)
+            #print(distance, robotAngle)
+            wallpoint = mapping.vectorAddition(positions[-1], robot2wall)
+            if wallpoint not in wall:
+                wall.append(robot2wall)
+            print(robot2wall)
+        time.sleep(measureFrequency)
+        
+#instantiate threads
+def main_thread():
+    stop_threads = False
+    t = Thread(target = getWallPos, args =(lambda : stop_threads, ))
+    t.start()
+    motorController.turn_360()
+    stop_threads = True
+    print('Fred killed')
+
+main_thread()
+mapping.buildSVG(wall)
+
+
 # Ultraschallpräsenz erkennen
 presence = ultraSonicSensor.scanForUltrasonicPresence()
 print("Ultrasonic Presence: " + str(presence))
 ev3.screen.print("Ultrasonic Presence: " + str(presence))
 
 # Distanz via Ultraschall messen
-distance = ultraSonicSensor.measureDistance()
-print(distance)
-ev3.screen.print(distance)
+#distance = ultraSonicSensor.measureDistance()
+#print(distance)
+#ev3.screen.print(distance)#
 
 # 5 Sekunden gerade aus fahren
-motorController.drive(3)
+#motorController.drive(3)
 
 # Umdrehen
-motorController.turn_around()
+#motorController.turn_around()
 
 # 5 Sekunden zurück fahren
-motorController.reverse(3)
+#motorController.reverse(3)
 
 # Wieder zum Start zurück fahren
-motorController.drive(6)
+#motorController.drive(6)
+
