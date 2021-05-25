@@ -13,8 +13,6 @@ import mapping
 import sys
 import time
 
-
-
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 ## Belegung Ports:
 ## Motor Link = B
@@ -36,14 +34,17 @@ wall = []
 positions = [[0,0]]
 robotAngle = 0
 measureFrequency = 0.008
+rawData = []
 
 def getWallPos(stop):
     while True:
         if stop():
                 break
         robotAngle = motorController.gyro_sensor.angle()
-        distance = ultraSonicSensor.measureDistance()
+        robotAngle = robotAngle % 360
         print(robotAngle)
+        distance = ultraSonicSensor.measureDistance()
+        rawData.append([robotAngle, distance])
         if distance < 1000:
             robot2wall = mapping.degToPos(robotAngle, distance)
             #print(distance, robotAngle)
@@ -61,6 +62,10 @@ def main_thread():
     motorController.turn_360()
     stop_threads = True
     print('Fred killed')
+    with open("rawData.txt", "a+") as f:
+        for element in rawData:
+            print(element)
+            f.write(str(element[0]) + "," + str(element[1]) + "\n")
 
 main_thread()
 mapping.buildSVG(wall)
@@ -72,9 +77,12 @@ print("Ultrasonic Presence: " + str(presence))
 ev3.screen.print("Ultrasonic Presence: " + str(presence))
 
 # Distanz via Ultraschall messen
-#distance = ultraSonicSensor.measureDistance()
-#print(distance)
-#ev3.screen.print(distance)#
+"""while True:
+    distance = ultraSonicSensor.measureDistance()
+    robotAngle = motorController.gyro_sensor.angle()
+    #ev3.screen.print(distance)
+    ev3.screen.print(robotAngle)"""
+
 
 # 5 Sekunden gerade aus fahren
 #motorController.drive(3)

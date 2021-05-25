@@ -1,7 +1,7 @@
 import math
 def degToPos(angle: float, length: float) -> list[float]:
-    x = math.cos(angle) * length
-    y = math.sin(angle) * length
+    y = math.cos(angle * (2 * math.pi / 360)) * length
+    x = math.sin(angle * (2 * math.pi / 360)) * length
     return [x,y]
 
 def vectorAddition(v1:list[float], v2:list[float]) -> list[float]:
