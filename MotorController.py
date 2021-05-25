@@ -33,7 +33,7 @@ class MotorController:
                 left_speed = self.speed
                 continue
                 
-            if angle < 0:
+            if angle > 0:
                 right_speed = right_speed + 15
                 print("MOTORSTEUERUNG: Drift nach rechts. (" + str(angle) +") Motor: L=" + str(left_speed) + " R=" + str(right_speed))
             else:
