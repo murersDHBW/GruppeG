@@ -1,7 +1,9 @@
 #!/usr/bin/env pybricks-micropython
+from UserInterface import UserInterface
+from threading import Thread
 from Outputs import Outputs
 from Inputs import Inputs
-from UserInteraction import UserInteraction
+from UserInterface import UserInterface
 from MotorController import MotorController
 from UltraSonicSensor import UltraSonicSensor
 from pybricks.hubs import EV3Brick
@@ -11,7 +13,7 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
-import time
+from time import sleep
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 ## Belegung Ports:
@@ -22,18 +24,33 @@ import time
 
 ## !!! Beachten: VS Code EOL von CRLF auf LF !!!
 
-# Create your objects here.
-ev3 = EV3Brick()
+def setup():
+    ev3 = EV3Brick()
 
-inputs = Inputs(ev3)
+    # Eigener Thread der sensoren einliest
+    inputs = Inputs(ev3)
+    inputs.calculate_gyro_offset()
 
-# gyro offset kalibrieren
-inputs.calculate_gyro_offset()
+    # Eigener Thread der die UI anzeigt
+    ui = UserInterface(ev3)
 
-outputs = Outputs()
+    # Initialisiert alle angeschlossenen Geräte, welche gesteuert werden können
+    outputs = Outputs()
 
-# Controller und Sensoren initialisieren
-motorController = MotorController(inputs, outputs)
+    motorController = MotorController(inputs, outputs)
 
-# time.sleep(20)
-motorController.drive(10)
+    while True:
+        loop(ev3, inputs, outputs, ui, motorController)
+
+def loop(ev3, inputs, outputs, ui, motorController):
+
+    do_in_bg(motorController.drive, (10, ))
+
+    while len(ev3.buttons.pressed()) == 0:
+        sleep(0.05)
+
+def do_in_bg(method, arg_tuple):
+    t = Thread(name= str(method.__name__) ,target=method, args=arg_tuple)
+    t.start()
+
+setup()

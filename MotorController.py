@@ -1,4 +1,5 @@
 from time import sleep, time
+from threading import Thread
 
 class MotorController:
 
@@ -6,6 +7,13 @@ class MotorController:
         self.speed = 300
         self.inputs = inputs
         self.outputs = outputs
+
+    #     self.driver_thread = None
+    
+    # def drive_bg(self, drive_seconds, reverse=False):
+    #     self.driver_thread = Thread(name= "Thread-Motorsteuerung",target=self.drive, args=(drive_seconds, reverse, ))
+    #     self.driver_thread.daemon = False
+    #     self.driver_thread.start()
     
     def drive(self, drive_seconds, reverse=False):
         left_speed = self.speed
