@@ -24,7 +24,7 @@ from time import sleep
 
 ## !!! Beachten: VS Code EOL von CRLF auf LF !!!
 
-def setup():
+def main():
     ev3 = EV3Brick()
 
     # Eigener Thread der sensoren einliest
@@ -35,22 +35,18 @@ def setup():
     ui = UserInterface(ev3)
 
     # Initialisiert alle angeschlossenen Geräte, welche gesteuert werden können
-    outputs = Outputs()
+    motorController = MotorController(inputs)
+    mapping = Mapping(motorController, inputs)
 
-    motorController = MotorController(inputs, outputs)
+    mapping.scan_360()
 
-    while True:
-        loop(ev3, inputs, outputs, ui, motorController)
-
-def loop(ev3, inputs, outputs, ui, motorController):
-
-    do_in_bg(motorController.drive, (10, ))
-
+    print("ENDE")
     while len(ev3.buttons.pressed()) == 0:
         sleep(0.05)
+
 
 def do_in_bg(method, arg_tuple):
     t = Thread(name= str(method.__name__) ,target=method, args=arg_tuple)
     t.start()
 
-setup()
+main()

@@ -3,18 +3,12 @@ from threading import Thread
 
 class MotorController:
 
-    def __init__(self, inputs, outputs):
+    def __init__(self, inputs):
         self.speed = 300
         self.inputs = inputs
-        self.outputs = outputs
+        self.left_motor = Motor(Port.B, positive_direction = Direction.COUNTERCLOCKWISE)
+        self.right_motor = Motor(Port.D, positive_direction = Direction.COUNTERCLOCKWISE)
 
-    #     self.driver_thread = None
-    
-    # def drive_bg(self, drive_seconds, reverse=False):
-    #     self.driver_thread = Thread(name= "Thread-Motorsteuerung",target=self.drive, args=(drive_seconds, reverse, ))
-    #     self.driver_thread.daemon = False
-    #     self.driver_thread.start()
-    
     def drive(self, drive_seconds, reverse=False):
         left_speed = self.speed
         right_speed = self.speed
@@ -27,8 +21,8 @@ class MotorController:
 
         while time() < drive_until:
 
-            self.outputs.run_left_motor(left_speed * reverse_multiplier)
-            self.outputs.run_right_motor(right_speed * reverse_multiplier)
+            self.left_motor.run(left_speed * reverse_multiplier)
+            self.left_motor.run(right_speed * reverse_multiplier)
             sleep(0.1)
 
             # Wenn wir rückwärts fahren sind die Seiten vertauscht
@@ -50,13 +44,11 @@ class MotorController:
 
             sleep(0.1)
 
-        self.outputs.stop_motors()
+        self.left_motor.stop()
+        self.right_motor.stop()
     
     def reverse(self, drive_seconds):
         self.drive(drive_seconds, reverse=True)
-
-    def drive_until_obstacle(self):
-        raise NotImplementedError("Dafür müssen wir erst irgend einen Sensor verbauen, der sowas erkennen kann.")
 
     def turn_by_degree(self, deg):
         angle = self.inputs.reset_angle()
@@ -64,8 +56,8 @@ class MotorController:
 
         if deg > 0:
             # nach rechts drehen
-            self.outputs.run_left_motor(turning_speed)
-            self.outputs.run_right_motor(turning_speed * -1)
+            self.left_motor.run(turning_speed)
+            self.right_motor.run(turning_speed * -1)
 
             while(True):
                 if(angle >= deg):
@@ -73,15 +65,16 @@ class MotorController:
                 angle = self.inputs.angle
         else:
             # nach links drehen
-            self.outputs.run_left_motor(turning_speed * -1)
-            self.outputs.run_right_motor(turning_speed)
+            self.left_motor.run(turning_speed * -1)
+            self.right_motor.run(turning_speed)
 
             while(True):
                 if(angle <= deg):
                     break
                 angle = self.inputs.angle
         
-        self.outputs.stop_motors()
+        self.left_motor.stop()
+        self.right_motor.stop()
     
     def turn_left(self):
         self.turn_by_degree(-90)
