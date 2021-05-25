@@ -26,6 +26,10 @@ import time
 ev3 = EV3Brick()
 
 inputs = Inputs(ev3)
+
+# gyro offset kalibrieren
+inputs.calculate_gyro_offset()
+
 outputs = Outputs()
 
 # Controller und Sensoren initialisieren
