@@ -10,7 +10,6 @@ class Mapping:
 
         self.wall = []
         self.positions = [[0,0]]
-        self.robotAngle = 0
         self.measureFrequency = 0.008
         self.rawData = []
     
