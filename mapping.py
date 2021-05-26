@@ -37,26 +37,25 @@ def get_mid_coord(v1,v2):
 def euclidean_distance(v1,v2):
     return math.sqrt((v1[0]-v2[0])**2+(v1[1]-v2[1])**2)
 
-
 def get_next_pos(rawData, current_position):
     cleanData = []
     for i in range(len(rawData)-1):
         if not rawData[i+1][1] == rawData[i][1]:
-            if rawData[i][1] < 750:
+            if rawData[i][1] < 1000:
                 cleanData.append(rawData[i])
 
     current_surrounding = []
     for x in cleanData:
-        current_surrounding.append(vectorAddition(degToPos(x[0],x[1]-230),current_position))
+        current_surrounding.append(vectorAddition(degToPos(x[0]*math.pi/180,x[1]-230),current_position))
     #x = [elem[0] for elem in deg]
     #y = [elem[1] for elem in deg]
 
     dist = []
-    for i in range(len(deg)-1):
+    for i in range(len(current_surrounding)-1):
         dist.append(cleanData[i+1][0]-cleanData[i][0])
         #dist.append(euclidean_distance(deg[i+1],deg[i]))
     dist.append(cleanData[0][0]-cleanData[-1][0]+360)
-    print(cleanData)
+    #print(cleanData)
     #dist.append(euclidean_distance(deg[-1],deg[0]))
     v_index = dist.index(max(dist))
 

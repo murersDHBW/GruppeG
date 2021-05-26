@@ -14,7 +14,11 @@ import sys
 import time
 import os
 
+#if os.path.isfile("rawData1.txt"):
 os.remove("rawData1.txt")
+#os.remove("rawData2.txt")
+#if os.path.isfile("map.txt"):
+#os.remove("map.txt")
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 ## Belegung Ports:
@@ -36,7 +40,7 @@ ultraSonicSensor = UltraSonicSensor()
 wall = []
 positions = [[0,0]]
 robotAngle = 0
-measureFrequency = 0.008
+measureFrequency = 0.004
 data_version = 1
 navigation = 5
 
@@ -46,7 +50,7 @@ def getRawData(stop):
             break
         robotAngle = motorController.gyro_sensor.angle()
         robotAngle = robotAngle % 360
-        print(robotAngle)
+        
         distance = ultraSonicSensor.measureDistance()
         
         test = [robotAngle, distance]
@@ -63,12 +67,12 @@ def random_Fred():
     stop_threads = True
     print('Fred killed')
     
-for x in range(5):
+for x in range(3):
     rawData = []
     random_Fred()
     with open("rawData" + str(data_version) + ".txt", "a+") as f:
+        f.write(str(positions[-1][0]) + "," + str(positions[-1][1]) + "\n")
         for element in rawData:
-            print(element)
             f.write(str(element[0]) + "," + str(element[1]) + "\n")
     data_version += 1
 
@@ -76,17 +80,16 @@ for x in range(5):
     wall.append(current_surrounding)
     motorController.turn_by_degree(angle_next_pos)
     motorController.drive(navigation, True)
-    motorController.turn_by_degree((angle_next_pos+180)%360)
-    positions.append(mapping.degToPos(angle_next_pos, navigation * 100))
+    motorController.turn_by_degree(-angle_next_pos)
+    positions.append(mapping.vectorAddition(mapping.degToPos(angle_next_pos, navigation * 80),positions[-1]))
 
 with open("map.txt", "a+") as f:
-        for element in wall:
-            print(element)
-            f.write(str(element[0]) + "," + str(element[1]) + "\n")
+    for element in wall[0]:
+        print(element)
+        f.write(str(element[0]) + "," + str(element[1]) + "\n")
+        print(f.read())
 
 #mapping.buildSVG(wall)
-
-
 
 
 """differences = []
