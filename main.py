@@ -133,3 +133,4 @@ motorController.turn_around()
 motorController.reverse(3)
 
 # Wieder zum Start zurück fahren
+motorController.drive(6)
