@@ -12,6 +12,9 @@ from threading import Thread
 import mapping
 import sys
 import time
+import os
+
+os.remove("rawData1.txt")
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 ## Belegung Ports:
@@ -34,41 +37,76 @@ wall = []
 positions = [[0,0]]
 robotAngle = 0
 measureFrequency = 0.008
-rawData = []
+data_version = 1
+navigation = 5
 
-def getWallPos(stop):
+def getRawData(stop):
     while True:
         if stop():
-                break
+            break
         robotAngle = motorController.gyro_sensor.angle()
         robotAngle = robotAngle % 360
         print(robotAngle)
         distance = ultraSonicSensor.measureDistance()
-        rawData.append([robotAngle, distance])
-        if distance < 1000:
-            robot2wall = mapping.degToPos(robotAngle, distance)
-            #print(distance, robotAngle)
-            wallpoint = mapping.vectorAddition(positions[-1], robot2wall)
-            if wallpoint not in wall:
-                wall.append(robot2wall)
-            print(robot2wall)
+        
+        test = [robotAngle, distance]
+        if test not in rawData:
+            rawData.append(test)
         time.sleep(measureFrequency)
         
 #instantiate threads
-def main_thread():
+def random_Fred():
     stop_threads = False
-    t = Thread(target = getWallPos, args =(lambda : stop_threads, ))
+    t = Thread(target = getRawData, args =(lambda : stop_threads, ))
     t.start()
     motorController.turn_360()
     stop_threads = True
     print('Fred killed')
-    with open("rawData.txt", "a+") as f:
+    
+for x in range(5):
+    rawData = []
+    random_Fred()
+    with open("rawData" + str(data_version) + ".txt", "a+") as f:
         for element in rawData:
             print(element)
             f.write(str(element[0]) + "," + str(element[1]) + "\n")
+    data_version += 1
 
-main_thread()
-mapping.buildSVG(wall)
+    angle_next_pos, current_surrounding = mapping.get_next_pos(rawData, positions[-1])
+    wall.append(current_surrounding)
+    motorController.turn_by_degree(angle_next_pos)
+    motorController.drive(navigation, True)
+    motorController.turn_by_degree((angle_next_pos+180)%360)
+    positions.append(mapping.degToPos(angle_next_pos, navigation * 100))
+
+with open("map.txt", "a+") as f:
+        for element in wall:
+            print(element)
+            f.write(str(element[0]) + "," + str(element[1]) + "\n")
+
+#mapping.buildSVG(wall)
+
+
+
+
+"""differences = []
+times = 3
+for i in range(10):
+    first = ultraSonicSensor.measureDistance()
+    motorController.drive(times)
+    second = ultraSonicSensor.measureDistance()
+    differences.append((second - first)/times)
+
+    first = ultraSonicSensor.measureDistance()
+    motorController.drive(times, reverse=True)
+    second = ultraSonicSensor.measureDistance()
+    differences.append((first - second)/times)
+
+with open("distanceVariation.txt", "a+") as f:
+        for element in rawData:
+            print(element)
+            f.write(str(element) + "\n")"""
+
 
 
 # Ultraschallpräsenz erkennen
