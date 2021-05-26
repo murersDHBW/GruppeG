@@ -15,6 +15,7 @@ class Inputs:
 
         self.ev3 = ev3
 
+        self.buttons = []
         self.angle = 0
         self.distance = 0
         self.presence = self.ultrasonic_sensor.presence()
@@ -28,6 +29,14 @@ class Inputs:
         while True:
             self.angle = self.gyro_sensor.angle() + self.gyro_offset
             self.distance = self.ultrasonic_sensor.distance()
+
+            for button in self.ev3.buttons.pressed():
+                if button == Button.DOWN:
+                    self.buttons.append(Button.DOWN)
+                if button == Button.UP:
+                    self.buttons.append(Button.UP)
+                if button == Button.CENTER:
+                    self.buttons.append(Button.CENTER)
 
             sleep(0.05)
     

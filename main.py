@@ -13,7 +13,7 @@ from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
 from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
-from pybricks.media.ev3dev import SoundFile, ImageFile
+from pybricks.media.ev3dev import SoundFile, ImageFile, Font
 from time import sleep
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
@@ -30,20 +30,20 @@ def main():
 
     # Eigener Thread der sensoren einliest
     inputs = Inputs(ev3)
-    inputs.calculate_gyro_offset()
+    # inputs.calculate_gyro_offset()
 
     # Eigener Thread der die UI anzeigt
-    ui = UserInterface(ev3)
+    ui = UserInterface(ev3, inputs)
 
     # Initialisiert alle angeschlossenen Geräte, welche gesteuert werden können
-    motorController = MotorController(inputs)
-    mapping = Mapping(motorController, inputs)
-
-    mapping.scan_360()
-    mapping.buildSVG()
+    # motorController = MotorController(inputs)
+    # mapping = Mapping(motorController, inputs)
+# 
+    # mapping.scan_360()
+    # mapping.buildSVG()
 
     print("ENDE")
-    while len(ev3.buttons.pressed()) == 0:
+    while True:
         sleep(0.05)
 
 
