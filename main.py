@@ -130,7 +130,6 @@ motorController.drive(3)
 motorController.turn_around()
 
 # 5 Sekunden zurück fahren
+motorController.reverse(3)
 
 # Wieder zum Start zurück fahren
-#motorController.drive(6)
-
