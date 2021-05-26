@@ -7,28 +7,27 @@ from time import sleep
 class Inputs:
     def __init__(self, ev3):
         self.gyro_sensor = GyroSensor(Port.S4)
-        self.GYRO_CALIBRATION_LOOP_COUNT = 200
+        self.ultrasonic_sensor = UltrasonicSensor(Port.S1)
 
+        self.GYRO_CALIBRATION_LOOP_COUNT = 200
         # Dieser Offset wird durch die Methode calibrate_gyro_offset() berechnet
         self.gyro_offset = 0
 
-        # self.ultrasonic_sensor = UltrasonicSensor(Port.S1)
         self.ev3 = ev3
 
         self.angle = 0
         self.distance = 0
-        # self.presence = self.ultrasonic_sensor.presence()
+        self.presence = self.ultrasonic_sensor.presence()
 
         input_thread = Thread(name="Thread-Inputs",target=self.read_inputs)
         # Dies ist ein Background-Thread. Wenn der main-Thread beendet wird,
         # soll dieser Thread auch beendet werden
-        input_thread.daemon = True
         input_thread.start()
     
     def read_inputs(self):
         while True:
             self.angle = self.gyro_sensor.angle() + self.gyro_offset
-            # self.distance = self.ultrasonic_sensor.distance()
+            self.distance = self.ultrasonic_sensor.distance()
 
             sleep(0.05)
     

@@ -2,6 +2,7 @@ from MotorController import MotorController
 from Inputs import Inputs
 from threading import Thread
 import math
+from time import sleep
 
 class Mapping:
     def __init__(self, motorController: MotorController, inputs: Inputs):
@@ -15,16 +16,14 @@ class Mapping:
     
     def scan_360(self) -> None:
         stop_threads = False
-
-        t = Thread(target = getWallPos, args =(lambda : stop_threads, ))
+        t = Thread(target = self.getWallPos, args =(lambda : stop_threads, ))
         t.start()
-
         self.motorController.turn_by_degree(360)
         stop_threads = True
 
         print('Fred killed')
         with open("rawData.txt", "a+") as f:
-            for element in rawData:
+            for element in self.rawData:
                 print(element)
                 f.write(str(element[0]) + "," + str(element[1]) + "\n")
 
@@ -34,17 +33,17 @@ class Mapping:
             if stop():
                 break
 
-            robotAngle = inputs.angle % 360
-            distance = inputs.distance
-            rawData.append([robotAngle, distance])
+            robotAngle = self.inputs.angle % 360
+            distance = self.inputs.distance
+            self.rawData.append([robotAngle, distance])
 
             if distance < 1000:
                 robot2wall = self.degToPos(robotAngle, distance)
                 wallpoint = self.vectorAddition(positions[-1], robot2wall)
-                if wallpoint not in wall:
-                    wall.append(robot2wall)
+                if wallpoint not in self.wall:
+                    self.wall.append(robot2wall)
                 print(robot2wall)
-            time.sleep(self.measureFrequency)
+            sleep(self.measureFrequency)
     
     def degToPos(self, angle: float, length: float) -> list[float]:
         y = math.cos(angle * (2 * math.pi / 360)) * length

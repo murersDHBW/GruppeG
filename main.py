@@ -4,6 +4,7 @@ from threading import Thread
 from Outputs import Outputs
 from Inputs import Inputs
 from UserInterface import UserInterface
+from Mapping import Mapping
 from MotorController import MotorController
 from UltraSonicSensor import UltraSonicSensor
 from pybricks.hubs import EV3Brick
@@ -39,6 +40,7 @@ def main():
     mapping = Mapping(motorController, inputs)
 
     mapping.scan_360()
+    mapping.buildSVG()
 
     print("ENDE")
     while len(ev3.buttons.pressed()) == 0:

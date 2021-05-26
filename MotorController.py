@@ -1,5 +1,7 @@
 from time import sleep, time
 from threading import Thread
+from pybricks.ev3devices import Motor
+from pybricks.parameters import Port, Direction
 
 class MotorController:
 
