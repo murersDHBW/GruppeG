@@ -1,9 +1,10 @@
 #!/usr/bin/env pybricks-micropython
 from MotorController import MotorController
 from UltraSonicSensor import UltraSonicSensor
+from GyroSensor import GyroSensor
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
-                                 InfraredSensor, UltrasonicSensor, GyroSensor)
+                                 InfraredSensor, UltrasonicSensor)
 from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
@@ -35,6 +36,7 @@ ev3 = EV3Brick()
 # Controller und Sensoren initialisieren
 motorController = MotorController()
 ultraSonicSensor = UltraSonicSensor()
+gyroSensor = GyroSensor()
 
 #instantiate variables needed for mapping
 wall = []
