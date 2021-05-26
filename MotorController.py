@@ -95,5 +95,3 @@ class MotorController:
     def turn_around(self):
         self.turn_by_degree(180)
             
-    def turn_360(self):
-        self.turn_by_degree(360)
