@@ -1,2 +1,6 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Textdateien automatisch erkennen, und das File Ending Encoding normalisieren (auf LF)
+* text=auto eol=lf
+
+# Sicherheit, damit der Texterkennungsalgorithmus keine 
+# Bilder als Textdateien erkennt
+*.{png,jpg,jpeg,gif,webp,woff,woff2} binary
