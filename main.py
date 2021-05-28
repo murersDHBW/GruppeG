@@ -1,10 +1,9 @@
 #!/usr/bin/env pybricks-micropython
 from UserInterface import UserInterface
 from threading import Thread
-from Outputs import Outputs
 from Inputs import Inputs
 from UserInterface import UserInterface
-from Mapping import Mapping
+from Mapping import buildSVG, degToPos, euclidean_distance, get_mid_coord, get_next_pos, posToDeg, vectorAddition
 from MotorController import MotorController
 from UltraSonicSensor import UltraSonicSensor
 from pybricks.hubs import EV3Brick
@@ -15,6 +14,7 @@ from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile, Font
 from time import sleep
+import os
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 ## Belegung Ports:
@@ -30,25 +30,78 @@ def main():
 
     # Eigener Thread der sensoren einliest
     inputs = Inputs(ev3)
-    # inputs.calculate_gyro_offset()
+    inputs.calculate_gyro_offset()
 
     # Eigener Thread der die UI anzeigt
     ui = UserInterface(ev3, inputs)
 
     # Initialisiert alle angeschlossenen Geräte, welche gesteuert werden können
-    # motorController = MotorController(inputs)
-    # mapping = Mapping(motorController, inputs)
-# 
-    # mapping.scan_360()
-    # mapping.buildSVG()
+    motorController = MotorController(inputs)
+
+    # Vorherige Messung entfernern
+    if os.path.isfile("rawData1.txt"):
+        os.remove("rawData1.txt")
+
+    #instantiate variables needed for mapping
+    wall = []
+    positions = [[0,0]]
+    robotAngle = 0
+    measureFrequency = 0.004
+    data_version = 1
+    navigation = 5
+
+    def getRawData(stop):
+        while True:
+            if stop():
+                break
+            robotAngle = inputs.angle
+            robotAngle = robotAngle % 360
+            
+            distance = inputs.distance
+            
+            test = [robotAngle, distance]
+            if test not in rawData:
+                rawData.append(test)
+            sleep(measureFrequency)
+            
+    #instantiate threads
+    def random_Fred():
+        stop_threads = False
+        t = Thread(target = getRawData, args =(lambda : stop_threads, ))
+        t.start()
+        motorController.turn_by_degree(360)
+        stop_threads = True
+        print('Fred killed')
+        
+    for _ in range(3):
+        rawData = []
+        random_Fred()
+        with open("rawData" + str(data_version) + ".txt", "a+") as f:
+            f.write(str(positions[-1][0]) + "," + str(positions[-1][1]) + "\n")
+            for element in rawData:
+                f.write(str(element[0]) + "," + str(element[1]) + "\n")
+        data_version += 1
+
+        angle_next_pos, current_surrounding = get_next_pos(rawData, positions[-1])
+        wall.append(current_surrounding)
+        motorController.turn_by_degree(angle_next_pos)
+        motorController.drive(navigation, True)
+        motorController.turn_by_degree(-angle_next_pos)
+
+        next_position = vectorAddition(degToPos(angle_next_pos, navigation * 80),positions[-1])
+
+        positions.append(next_position)
+        ui.waypoints.append(next_position)
+
+    with open("map.txt", "a+") as f:
+        for element in wall[0]:
+            print(element)
+            f.write(str(element[0]) + "," + str(element[1]) + "\n")
+            print(f.read())
 
     print("ENDE")
     while True:
         sleep(0.05)
 
-
-def do_in_bg(method, arg_tuple):
-    t = Thread(name= str(method.__name__) ,target=method, args=arg_tuple)
-    t.start()
 
 main()
