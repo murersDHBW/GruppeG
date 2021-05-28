@@ -30,7 +30,7 @@ class UserInterface:
         # Position des Cursors
         self.cursor_index = 0
         self.cursor_blink = False
-        self.waypoints = ["1 - Punkt", "2 - Punkt", "3 - Punkt", "4 - Punkt"]
+        self.waypoints = []
         self.status_msg = "Warte..."
 
         # Der Wegpunkt, zu welchem gefahren werden soll. Der Webpunkt wird erst bei einer Auswahl
@@ -75,9 +75,12 @@ class UserInterface:
 
             self.screen.clear()
             self.draw_title()
-            self.draw_list()
-            self.draw_cursor()
-            self.draw_status_bar()
+
+            if len(self.waypoints) > 0:
+                self.draw_list()
+                self.draw_cursor()
+
+            # self.draw_status_bar()
 
             if not button_pressed:
                 sleep(0.01)

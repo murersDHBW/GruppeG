@@ -16,15 +16,6 @@ from pybricks.media.ev3dev import SoundFile, ImageFile, Font
 from time import sleep
 import os
 
-# This program requires LEGO EV3 MicroPython v2.0 or higher.
-## Belegung Ports:
-## Motor Link = B
-## Motor Rechts = D
-## UltraSonic = 1
-## Gyro = 4
-
-## !!! Beachten: VS Code EOL von CRLF auf LF !!!
-
 def main():
     ev3 = EV3Brick()
 
@@ -39,13 +30,14 @@ def main():
     motorController = MotorController(inputs)
 
     # Vorherige Messung entfernern
-    if os.path.isfile("rawData1.txt"):
+    try:
         os.remove("rawData1.txt")
+    except:
+        print("Keine Daten vorhanden")
 
     #instantiate variables needed for mapping
     wall = []
     positions = [[0,0]]
-    robotAngle = 0
     measureFrequency = 0.004
     data_version = 1
     navigation = 5
