@@ -5,6 +5,7 @@ from Inputs import Inputs
 from UserInterface import UserInterface
 from Mapping import buildSVG, degToPos, euclidean_distance, get_mid_coord, get_next_pos, posToDeg, vectorAddition
 from MotorController import MotorController
+import math
 from UltraSonicSensor import UltraSonicSensor
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
@@ -40,8 +41,31 @@ def main():
     positions = [[0,0]]
     measureFrequency = 0.004
     data_version = 1
-    navigation = 5
+    drive_time = 5
+    drive_dist_per_sec = 80
     angles = []
+
+    def localize_past_pos(go_to, angles):
+        rev_angles = angles.reverse()
+        if go_to > len(rev_angles):
+            go_to == len(rev_angles)
+        for i in go_to:
+            current_angle = (rev_angles[i]+180)%360
+            motorController.turn_by_degree(current_angle)
+            motorController.drive(c/, True)
+            motorController.turn_by_degree(-current_angle)
+    
+    def localize_coordinate(x,y, drive_dist_per_sec):
+        current_angle = posToDeg(x,y)
+        c = math.sqrt(x**2 + y**2)
+        motorController.turn_by_degree(current_angle)
+        motorController.drive(c / drive_dist_per_sec, True)
+        motorController.turn_by_degree(-current_angle)
+
+        next_position = vectorAddition(degToPos(angle_next_pos, drive_time * drive_dist_per_sec),positions[-1])
+
+        positions.append(next_position)
+        ui.waypoints.append(next_position)
 
     def getRawData(stop):
         while True:
@@ -78,13 +102,17 @@ def main():
         angle_next_pos, current_surrounding = get_next_pos(rawData, positions[-1])
         wall.append(current_surrounding)
         motorController.turn_by_degree(angle_next_pos)
-        motorController.drive(navigation, True)
+        angles.append(angle_next_pos)
+        motorController.drive(drive_time, True)
         motorController.turn_by_degree(-angle_next_pos)
 
-        next_position = vectorAddition(degToPos(angle_next_pos, navigation * 80),positions[-1])
+        next_position = vectorAddition(degToPos(angle_next_pos, drive_time * drive_dist_per_sec),positions[-1])
 
         positions.append(next_position)
         ui.waypoints.append(next_position)
+
+    
+
 
     with open("map.txt", "a+") as f:
         for element in wall[0]:
