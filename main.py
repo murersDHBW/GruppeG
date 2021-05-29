@@ -45,6 +45,7 @@ def main():
     drive_dist_per_sec = 80
     angles = []
 
+    #drive back to a point that you have allready been to
     def localize_past_pos(go_to, angles):
         rev_angles = angles.reverse()
         if go_to > len(rev_angles):
@@ -55,6 +56,7 @@ def main():
             motorController.drive(c/, True)
             motorController.turn_by_degree(-current_angle)
     
+    #go to a given coordinate
     def localize_coordinate(x,y, drive_dist_per_sec):
         current_angle = posToDeg(x,y)
         c = math.sqrt(x**2 + y**2)
@@ -67,6 +69,7 @@ def main():
         positions.append(next_position)
         ui.waypoints.append(next_position)
 
+    #collect raw data for mapping (angles from gyro and distance from ultrasonic)
     def getRawData(stop):
         while True:
             if stop():
