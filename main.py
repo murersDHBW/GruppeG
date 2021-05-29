@@ -41,6 +41,7 @@ def main():
     measureFrequency = 0.004
     data_version = 1
     navigation = 5
+    angles = []
 
     def getRawData(stop):
         while True:
