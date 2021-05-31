@@ -24,7 +24,7 @@ class MotorController:
         while time() < drive_until:
 
             self.left_motor.run(left_speed * reverse_multiplier)
-            self.left_motor.run(right_speed * reverse_multiplier)
+            self.right_motor.run(right_speed * reverse_multiplier)
             sleep(0.1)
 
             # Wenn wir rückwärts fahren sind die Seiten vertauscht
